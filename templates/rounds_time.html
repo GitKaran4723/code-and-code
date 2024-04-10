@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Competition Rounds</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        #rounds {
+            display: flex;
+            flex-direction: row; /* Use flex-direction to stack elements vertically */
+            justify-content: center;
+            margin-top: 50px;
+        }
+        
+        .round {
+            margin: 0 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Coding Competition Rounds</h1>
+    <div id="rounds">
+        <div class="round">
+            <h2>Round 1</h2>
+            <button id="round1Btn" onclick="startRound(1)" disabled>Start Round 1</button>
+            <p id="time1"></p>
+        </div>
+        <div class="round">
+            <h2>Round 2</h2>
+            <button id="round2Btn" onclick="startRound(2)" disabled>Start Round 2</button>
+            <p id="time2"></p>
+        </div>
+        <div class="round">
+            <h2>Round 3</h2>
+            <button id="round3Btn" onclick="startRound(3)" disabled>Start Round 3</button>
+            <p id="time3"></p>
+        </div>
+    </div>
+
+    <script>
+        var round3StartTime = new Date('2024-04-07T07:25:00');
+        var round2StartTime = new Date('2024-04-07T14:30:00');
+        var round1StartTime = new Date('2024-04-20T22:00:00');
+
+        function updateTimer(elementId, startTime, buttonId) {
+            var timerElement = document.getElementById(elementId);
+            var currentTime = new Date();
+            var timeDifference = startTime - currentTime;
+            var seconds = Math.floor((timeDifference / 1000) % 60);
+            var minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+            var hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+            var days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            var buttonElement = document.getElementById(buttonId);
+            if (timeDifference <= 0) {
+                buttonElement.removeAttribute('disabled');
+                timerElement.textContent = "Round started";
+            } else {
+                buttonElement.setAttribute('disabled', 'disabled');
+                timerElement.textContent = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+            }
+            
+        }
+
+        setInterval(function() {
+            updateTimer('time1', round1StartTime, 'round1Btn');
+            updateTimer('time2', round2StartTime, 'round2Btn');
+            updateTimer('time3', round3StartTime, 'round3Btn');
+        }, 1000);
+
+        function startRound(roundNumber) {
+            switch(roundNumber) {
+
+                case 2:
+                    window.location.href = "round2login";
+                    // Add your logic for starting Round 3 here
+                    break;
+
+                case 3:
+                    window.location.href = "round3login";
+                    // Add your logic for starting Round 3 here
+                    break;
+                default:
+                    alert("Invalid round number");
+                    break;
+            }
+        }
+        
+    </script>
+</body>
+</html>

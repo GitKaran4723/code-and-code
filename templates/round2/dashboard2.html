@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Engineering Event</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative; /* Added */
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .team-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .start-contest {
+            display: none; /* Initially hidden */
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .start-contest:hover {
+            background-color: #0056b3;
+        }
+        .logout-button { /* Added */
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff0000; /* Red color */
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .instructions h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .instructions p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form  action="/logout2" method="POST">
+            <input class="logout-button" type="submit" value="Logout">
+        </form>
+
+        <h1>Congratulations on reaching Round 2!</h1>
+        <div class="team-name">{{ team_name }}</div>
+        
+        
+        
+        
+        <div class="instructions">
+            <h2>Instructions:</h2>
+            <p>Welcome to the Reverse Engineering Event! In this round, you will be presented with various challenges that require you to analyze and understand existing systems, applications, or code.</p>
+            <p>Your task is to reverse engineer the given components, understand their functionality, and provide solutions or answers based on your analysis.</p>
+            <p>You may encounter tasks such as identifying vulnerabilities, analyzing algorithms, understanding protocols, or reverse engineering binary executables.</p>
+            <p>Be prepared to demonstrate your problem-solving skills, attention to detail, and ability to think creatively.</p>
+            <input type="checkbox" id="confirm" onchange="toggleStartButton()"> <!-- Checkbox to confirm understanding -->
+            <label for="confirm">I confirm that I have read and understood the instructions</label>
+            
+
+        </div>
+
+        <form action="/revengg2">
+            <input class="start-contest" type="submit" value="Start Reverse Engineering Contest">
+        </form>
+    </div>
+    <script>
+        function toggleStartButton() {
+            const startButton = document.querySelector('.start-contest');
+            const confirmCheckbox = document.querySelector('#confirm');
+            startButton.style.display = confirmCheckbox.checked ? 'block' : 'none';
+        }
+        </script>
+</body>
+</html>

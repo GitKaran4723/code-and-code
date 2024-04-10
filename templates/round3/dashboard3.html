@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Round 3 Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        h3 {
+            color: #222;
+            margin-bottom: 20px;
+        }
+        .team-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .start-contest {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .start-contest:hover {
+            background-color: #0056b3;
+        }
+        .instructions {
+            margin-top: 40px;
+            text-align: left;
+        }
+        .instructions p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .logout-form {
+            margin-top: 20px;
+        }
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Congratulations on advancing to Round 3!</h1>
+        <h3>We wish you the best of luck!</h3>
+        <div class="team-name">{{ team_name }}</div>
+        <a class="start-contest" href="/code3">Start Contest</a>
+        
+        <div class="instructions">
+            <h3>Instructions:</h3>
+            <p>1. You will have a limited time to complete the contest.</p>
+            <p>2. Make sure to read each question carefully and provide your solutions accordingly.</p>
+            <p>3. Once you start the contest, make sure to complete it without refreshing the page.</p>
+            <p>4. Click the "Start Contest" button above to begin.</p>
+        </div>
+        
+        <form class="logout-form" action="/logout3" method="POST">
+            <button class="logout-btn" type="submit">Logout</button>
+        </form>
+    </div>
+</body>
+</html>

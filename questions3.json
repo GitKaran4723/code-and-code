@@ -1,0 +1,101 @@
+{
+    "questions": [
+      {
+        "id": 1,
+        "title": "Sum of Two Numbers",
+        "description": "Write a program to find the sum of two numbers.",
+        "test_cases": [
+          {
+            "input": "20 30",
+            "expected_output": "50",
+            "score": 20
+          },
+          {
+            "input": "-1 -1",
+            "expected_output": "-2",
+            "score": 20
+          },
+          {
+            "input": "0 0",
+            "expected_output": "0",
+            "score": 20
+          },
+          {
+            "input": "100 -100",
+            "expected_output": "200",
+            "score": 20
+          },
+          {
+            "input": "999 1",
+            "expected_output": "1000",
+            "score": 10
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Find Maximum Number",
+        "description": "Write a program to find the maximum of two numbers.",
+        "test_cases": [
+          {
+            "input": "2 3",
+            "expected_output": "3",
+            "score": 20
+          },
+          {
+            "input": "5 -1",
+            "expected_output": "5",
+            "score": 20
+          },
+          {
+            "input": "-10 -5",
+            "expected_output": "-5",
+            "score": 20
+          },
+          {
+            "input": "0 0",
+            "expected_output": "0",
+            "score": 20
+          },
+          {
+            "input": "100 999",
+            "expected_output": "999",
+            "score": 20
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Factorial of a Number",
+        "description": "Write a program to calculate the factorial of a number.",
+        "test_cases": [
+          {
+            "input": "0",
+            "expected_output": "1",
+            "score": 20
+          },
+          {
+            "input": "5",
+            "expected_output": "120",
+            "score": 20
+          },
+          {
+            "input": "10",
+            "expected_output": "3628800",
+            "score": 20
+          },
+          {
+            "input": "3",
+            "expected_output": "6",
+            "score": 20
+          },
+          {
+            "input": "7",
+            "expected_output": "5040",
+            "score": 20
+          }
+        ]
+      }
+    ]
+  }
+  

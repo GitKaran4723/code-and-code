@@ -1,0 +1,68 @@
+{
+    "questions": [
+        {
+            "id": 5,
+            "title": "Reverse a String",
+            "description": "Write a program to reverse a given string.",
+            "test_cases": [
+                {
+                    "input": "hello",
+                    "expected_output": "olleh",
+                    "score": 20
+                },
+                {
+                    "input": "programming",
+                    "expected_output": "gnimmargorp",
+                    "score": 20
+                },
+                {
+                    "input": "12345",
+                    "expected_output": "54321",
+                    "score": 20
+                },
+                {
+                    "input": "racecar",
+                    "expected_output": "racecar",
+                    "score": 20
+                },
+                {
+                    "input": "algorithm",
+                    "expected_output": "mhtirogla",
+                    "score": 20
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "title": "Prime Numbers",
+            "description": "Write a program to find all prime numbers within a given range.",
+            "test_cases": [
+                {
+                    "input": "1 10",
+                    "expected_output": "2 3 5 7",
+                    "score": 20
+                },
+                {
+                    "input": "10 50",
+                    "expected_output": "11 13 17 19 23 29 31 37 41 43 47",
+                    "score": 20
+                },
+                {
+                    "input": "50 100",
+                    "expected_output": "53 59 61 67 71 73 79 83 89 97",
+                    "score": 20
+                },
+                {
+                    "input": "100 200",
+                    "expected_output": "101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199",
+                    "score": 20
+                },
+                {
+                    "input": "200 300",
+                    "expected_output": "211 223 227 229 233 239 241 251 257 263 269 271 277 281 283 293",
+                    "score": 20
+                }
+            ]
+        }
+    ]
+}

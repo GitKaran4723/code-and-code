@@ -1,0 +1,14 @@
+{
+    "questions":[
+        {
+            "id":1,
+            "title":"Draw the pattern in the image below",
+            "link":"http://127.0.0.1:5000/static/images/qn1.png"
+        },
+        {
+            "id":2,
+            "title":"Get the output as given in the image below",
+            "link":"http://127.0.0.1:5000/static/images/qn2.png"
+        }
+    ]
+}

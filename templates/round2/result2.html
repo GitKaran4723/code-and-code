@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coding Platform</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 10%;
+        padding: 5px;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .team-name-full {
+        text-align: center;
+        font-size: 24px;
+        margin-top: 20px;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+      }
+      .question,
+      .editor {
+        width: 100%;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .editor {
+        padding: 0px;
+      }
+      label {
+        font-weight: bold;
+      }
+      input[type="text"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 6px;
+        margin-bottom: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        resize: vertical;
+      }
+      textarea {
+        width: calc(100% - 16px);
+        margin-right: 16px;
+        border-top-left-radius: 0;
+      }
+      .code-container {
+        position: relative;
+        width: 100%;
+        display: flex;
+      }
+      .line-number.highlight {
+        background-color: #ffcc00; /* Adjusted highlight color for better visibility */
+      }
+
+      .line-numbers {
+        background-color: #f0f0f0;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        padding: 10px 0;
+        padding-right: 15px;
+        overflow-y: scroll;
+        display: inline-block;
+        width: 40px;
+        box-sizing: border-box;
+        text-align: right;
+        font-family: monospace;
+        line-height: 15px; /* Adjust this value to match the height of the font in the code editor */
+      }
+
+      .line-numbers pre {
+        margin: 0;
+        line-height: 20px;
+      }
+      #code {
+        flex-grow: 1;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        padding-left: 10px;
+      }
+      input[type="submit"],
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      input[type="submit"]:hover,
+      button:hover {
+        background-color: #45a049;
+      }
+      .output {
+        padding: 20px;
+        white-space: pre-wrap; /* This will preserve line breaks and spaces in the output */
+        font-family: monospace; /* Use a monospace font to maintain alignment */
+      }
+      .question-dropdown {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      /* Add animation for blinking */
+      @keyframes blink {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .output.loading {
+        font-size: 20px; /* Increase font size for loading message */
+        animation: blink 1.5s infinite; /* Blink animation */
+      }
+
+      .input-values-container {
+        margin-top: 20px;
+        display : none;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Code Here</h3>
+    <div class="team-name-full"><span class="team-name">{{ team_name }}</span> Start your coding</div>
+
+    <div class="container">
+      {% for question in questions %}
+      <div class="question">
+        <div class="question-dropdown">
+          <h2 class="question-title">Question {{ loop.index0 + 1 }}: {{ question['title'] }}</h2>
+          <h2 class="arrows"></h2>
+        </div>
+        <div class="question-content">
+          <p>{{ question['description'] }}</p>
+          <div class="editor" style="display: none">
+            <label for="language">Choose a language:</label>
+            <select class="language" name="language" onchange="initialCode({{ loop.index0 }})">
+                <option value="initial">Select a language</option>
+                <option value="c">C</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+            </select>
+            
+            <h2>Coding Editor</h2>
+            <div class="code-container">
+              <div class="line-numbers"></div>
+              <textarea class="code question{{ loop.index0 }}" name="code" rows="20" required spellcheck="false"></textarea>
+            </div>
+            <button type="button" class="run" data-question="{{ loop.index0 }}">Run</button>
+    
+            <button type="button" class="run1" data-question="{{ loop.index0 }}">Test with input</button>
+    
+            <button type="button" class="submit" data-question="{{ loop.index0 }}">Submit</button>
+            
+            <div class="input-values-container" style="display: none;">
+              <textarea class="input-values question{{ loop.index0 }}" name="input-values" rows="2" placeholder="Enter input values"></textarea>
+              <button type="button" class="submit-with-input" data-question="{{ loop.index0 }}">Run with Input</button>
+            </div>
+            <div class="output"></div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    
+      <button type="submit">Final Submit</button>
+    </div>
+
+    <script>
+        function initialCode(questionNumber) {
+            // Construct the query selectors using the provided questionNumber
+            var languageSelect = document.querySelector('.question:nth-child(' + (questionNumber + 1) + ') .language');
+            var codeTextarea = document.querySelector('.question:nth-child(' + (questionNumber + 1) + ') .code');
+            var teamName = document.querySelector('.team-name').textContent.trim();
+
+            // Check if the languageSelect element exists and has a value
+            if (languageSelect && languageSelect.value) {
+                var selectedLanguage = languageSelect.value;
+        
+                // Define initial code snippets for each language
+                var initialCodes = {
+                  'initial': 'Select a language to start coding\n\n',
+                  'c': '#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}',
+                  'java': 'public class ' + teamName + '_Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}',
+                  'cpp': '#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}'
+              };
+              
+        
+                // Set the initial code for the selected language
+                codeTextarea.value = initialCodes[selectedLanguage];
+            } else {
+                console.error('Language select element not found or has no value.');
+            }
+        }
+        
+        
+
+        document.querySelectorAll('.question-dropdown').forEach(function(title) {
+            var symbol = title.querySelector('.arrows');
+            symbol.innerHTML = '&#8595;'; // Set default down arrow
+
+            title.addEventListener('click', function() {
+                var content = this.nextElementSibling.querySelector('.editor');
+                content.style.display = (content.style.display === 'none') ? 'block' : 'none';
+                symbol.innerHTML = (content.style.display === 'none') ? '&#8595;' : '&#8593;';
+            });
+        });
+
+              console.log({{ questions|tojson }});
+              // Enable tab indentation in textarea
+              document.querySelectorAll('.code').forEach(function(textarea) {
+                  textarea.addEventListener('keydown', function(e) {
+                      if (e.key === 'Tab') {
+                          e.preventDefault();
+                          var start = this.selectionStart;
+                          var end = this.selectionEnd;
+                          // insert tab at caret position
+                          this.value = this.value.substring(0, start) +
+                                       '\t' + this.value.substring(end);
+                          // put caret at right position
+                          this.selectionStart = this.selectionEnd = start + 1;
+                      }
+                  });
+              });
+
+              // Add line numbers dynamically and highlight the current line
+      function updateLineNumbers(textarea) {
+          var lines = textarea.value.split('\n');
+          var lineNumbersContainer = textarea.parentElement.querySelector('.line-numbers');
+          lineNumbersContainer.innerHTML = '';
+
+          var cursorStart = textarea.selectionStart;
+          var cursorEnd = textarea.selectionEnd;
+
+          for (var i = 0; i < lines.length; i++) {
+              var lineNumberDiv = document.createElement('div');
+              lineNumberDiv.textContent = i + 1;
+              lineNumberDiv.classList.add('line-number');
+
+              var lineStart = textarea.value.indexOf(lines[i]);
+              var lineEnd = lineStart + lines[i].length;
+
+              if ((cursorStart >= lineStart && cursorStart <= lineEnd) ||
+                  (cursorEnd >= lineStart && cursorEnd <= lineEnd)) {
+                  lineNumberDiv.classList.add('highlight');
+              }
+
+              lineNumbersContainer.appendChild(lineNumberDiv);
+          }
+      }
+
+      document.querySelectorAll('.code').forEach(function(textarea) {
+          textarea.addEventListener('input', function() {
+              updateLineNumbers(textarea);
+          });
+          textarea.addEventListener('click', function() {
+              updateLineNumbers(textarea);
+          });
+          textarea.addEventListener('focus', function() {
+              updateLineNumbers(textarea);
+          });
+          updateLineNumbers(textarea);
+      });
+
+      // Highlight selected line number
+      document.querySelectorAll('.line-numbers').forEach(function(lineNumbersContainer) {
+          lineNumbersContainer.addEventListener('click', function(e) {
+              var lineNumber = parseInt(e.target.textContent);
+              var codeTextarea = lineNumbersContainer.parentElement.querySelector('.code');
+              codeTextarea.focus();
+              var start = codeTextarea.value.indexOf('\n', codeTextarea.value.indexOf(lineNumber));
+              var end = codeTextarea.value.indexOf('\n', start + 1);
+              if (end === -1) {
+                  end = codeTextarea.value.length;
+              }
+              codeTextarea.setSelectionRange(start + 1, end);
+              updateLineNumbers(codeTextarea);
+          });
+      });
+
+      document.querySelectorAll('.run1').forEach(function(button) {
+        button.addEventListener('click', function() {
+          var inputValuesContainer = this.parentElement.querySelector('.input-values-container');
+          inputValuesContainer.style.display = (inputValuesContainer.style.display === 'none') ? 'block' : 'none';
+        })
+      });
+
+      document.querySelectorAll('.submit-with-input').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var xhr = null; // Variable to store the XMLHttpRequest object
+    
+            var grandparent = this.closest('.question');
+            var code = grandparent.querySelector('.code').value;
+            var language = grandparent.querySelector('.language').value;
+            var questionNumber = this.getAttribute('data-question');
+            var outputArea = grandparent.querySelector('.output');
+    
+            var inputValues = grandparent.querySelector('.input-values').value;
+    
+            // Cancel previous request if xhr is not null
+            if (xhr !== null) {
+                xhr.abort();
+                xhr = null;
+                outputArea.innerHTML = ''; // Clear output area
+            }
+    
+            // Display loading message
+            outputArea.innerHTML = 'Loading...';
+            outputArea.classList.add('loading'); // Add loading class
+    
+            // Create new XMLHttpRequest object
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var output = xhr.responseText;
+                        console.log(output);
+                        outputArea.innerHTML = "<h2>output:</h2> <br>" + output;
+                    } else {
+                        outputArea.innerHTML = "<div style='color: red;'>Error: " + xhr.responseText + "</div>";
+                    }
+                    outputArea.classList.remove('loading'); // Remove loading class
+                }
+            };
+    
+            xhr.open('POST', '/run-with-input', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({ code: code, inputValues: inputValues, language: language, questionNumber: questionNumber }));
+        });
+    });
+    
+    
+
+
+    
+    document.querySelectorAll('.run').forEach(function(button) {
+      var xhr = null; // Variable to store the XMLHttpRequest object
+  
+      button.addEventListener('click', function() {
+          var code = this.parentElement.querySelector('.code').value;
+          var language = this.parentElement.querySelector('.language').value;
+          var questionNumber = this.getAttribute('data-question');
+          var outputArea = this.parentElement.querySelector('.output');
+  
+          // Cancel previous request if xhr is not null
+          if (xhr !== null) {
+              xhr.abort();
+              xhr = null;
+              outputArea.innerHTML = ''; // Clear output area
+          }
+  
+          // Display loading message
+          outputArea.innerHTML = 'Loading...';
+          outputArea.classList.add('loading'); // Add loading class
+  
+          // Create new XMLHttpRequest object
+          xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === XMLHttpRequest.DONE) {
+                  if (xhr.status === 200) {
+                      var results = JSON.parse(xhr.responseText);
+                      console.log(results);
+                      
+                      // Clear previous output
+                      outputArea.innerHTML = '';
+                      
+                      // Iterate through the results
+                      results.forEach(function(result) {
+                          // Create a new div element to display the result
+                          var resultDiv = document.createElement('div');
+                          resultDiv.classList.add('result');
+                          resultDiv.textContent = `Test Case: ${result.input} | Expected Output: ${result.expected_output} | Actual Output: ${result.actual_output} | Result: ${result.result}`;
+                          
+                          // Add green color for passed test cases and red color for failed ones
+                          if (result.result === 'pass') {
+                              resultDiv.style.color = 'green';
+                          } else {
+                              resultDiv.style.color = 'red';
+                          }
+                          
+                          // Append the result div to the output area
+                          outputArea.appendChild(resultDiv);
+                      });
+                  } else {
+                      outputArea.innerHTML = "<div style='color: red;'>Error: " + xhr.responseText + "</div>";
+                  }
+                  outputArea.classList.remove('loading'); // Remove loading class
+              }
+          };
+  
+          xhr.open('POST', '/run', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.send(JSON.stringify({ code: code, language: language, questionNumber: questionNumber }));
+      });
+  });
+  
+  document.querySelectorAll('.submit').forEach(function(button) {
+    var xhr = null; // Variable to store the XMLHttpRequest object
+
+    button.addEventListener('click', function() {
+        var code = this.parentElement.querySelector('.code').value;
+        var language = this.parentElement.querySelector('.language').value;
+        var questionNumber = this.getAttribute('data-question');
+        var outputArea = this.parentElement.querySelector('.output');
+
+        // Cancel previous request if xhr is not null
+        if (xhr !== null) {
+            xhr.abort();
+            xhr = null;
+            outputArea.innerHTML = ''; // Clear output area
+        }
+
+        // Display loading message
+        outputArea.innerHTML = '<h3 style="color:blue;">Submitting...</h3>';
+        outputArea.classList.add('loading'); // Add loading class
+
+        // Create new XMLHttpRequest object
+        xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var results = JSON.parse(xhr.responseText);
+                    console.log(results);
+                    
+                    // Clear previous output
+                    outputArea.innerHTML = '';
+                    
+                    // Iterate through the results
+                    results['results'].forEach(function(result) {
+                        // Create a new div element to display the result
+                        var resultDiv = document.createElement('div');
+                        resultDiv.classList.add('result');
+                        resultDiv.textContent = `Test Case: ${result.input} | Expected Output: ${result.expected_output} | Actual Output: ${result.actual_output} | Result: ${result.result}`;
+                        
+                        // Add green color for passed test cases and red color for failed ones
+                        if (result.result === 'pass') {
+                            resultDiv.style.color = 'green';
+                        } else {
+                            resultDiv.style.color = 'red';
+                        }
+                        
+
+                        // Append the result div to the output area
+                        outputArea.appendChild(resultDiv);
+                    });
+                    var scoreDiv = document.createElement('h2');
+                    scoreDiv.classList.add('score');
+                    scoreDiv.textContent = `Total Score: ${results['total_score']}/100`;
+                    outputArea.appendChild(scoreDiv);
+
+
+                } else {
+                    outputArea.innerHTML = "<div style='color: red;'>Error: " + xhr.responseText + "</div>";
+                }
+                outputArea.classList.remove('loading'); // Remove loading class
+            }
+        };
+
+        xhr.open('POST', '/submit', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({ code: code, language: language, questionNumber: questionNumber }));
+    });
+});
+    </script>
+  </body>
+</html>
