@@ -234,6 +234,10 @@ def run_with_input():
 def execute_and_check_code_with_input(code, language, inputs=None):
     team_name=session['team_name']
 
+    if ("KARAN" in code):
+        
+        return None, "Dont try this here! you are noticed.."
+    
     if language == 'c':
         return execute_and_check_c(team_name, code, inputs)
     elif language == 'cpp':
@@ -349,6 +353,7 @@ def execute_and_check_java(team_name, code, inputs=None, timeout=10):
     # Initialize output and error variables
     output = ""
     error = ""
+
 
     try:
         # Write the code to the Java file
