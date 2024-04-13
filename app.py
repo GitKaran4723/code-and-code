@@ -247,7 +247,7 @@ def execute_and_check_code_with_input(code, language, inputs=None):
 import subprocess
 import os
 
-def execute_and_check_c(team_name, code, inputs=None, timeout=None):
+def execute_and_check_c(team_name, code, inputs=None, timeout=5):
     # Generate unique file names based on team name
     c_file_name = f'{team_name}_temp.c'
     binary_file_name = f'{team_name}_temp.exe'
@@ -290,7 +290,7 @@ def execute_and_check_c(team_name, code, inputs=None, timeout=None):
         if os.path.exists(binary_file_name):
             os.remove(binary_file_name)
 
-def execute_and_check_cpp(team_name, code, inputs=None, timeout=None):
+def execute_and_check_cpp(team_name, code, inputs=None, timeout=5):
     # Generate unique file names based on team name
     cpp_file_name = f'{team_name}_temp.cpp'
     binary_file_name = f'{team_name}_temp_cpp.exe'
@@ -336,10 +336,19 @@ def execute_and_check_cpp(team_name, code, inputs=None, timeout=None):
 import subprocess
 import os
 
+import subprocess
+import os
+import signal
+import threading
+
 def execute_and_check_java(team_name, code, inputs=None, timeout=10):
     # Generate unique file name based on team name
     java_file_name = f'{team_name}_Main.java'
     class_file_name = f'{team_name}_Main'
+    
+    # Initialize output and error variables
+    output = ""
+    error = ""
 
     try:
         # Write the code to the Java file
@@ -354,19 +363,37 @@ def execute_and_check_java(team_name, code, inputs=None, timeout=10):
             # Compilation failed, return compilation error
             return None, f"Compilation failed: {compilation.stderr.decode('utf-8').strip()}"
         
-        # Execute the compiled Java code with timeout
-        if inputs:
-            execution = subprocess.run(['java', class_file_name], input=inputs.encode(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
-        else:
-            execution = subprocess.run(['java', class_file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
-            
-        output = execution.stdout.decode('utf-8')
-        error = execution.stderr.decode('utf-8').strip()
+        # Define a function to execute the Java code
+        def execute_java():
+            nonlocal output, error
+            try:
+                # Execute the compiled Java code
+                if inputs:
+                    execution = subprocess.run(['java', class_file_name], input=inputs.encode(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                else:
+                    execution = subprocess.run(['java', class_file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    
+                output = execution.stdout.decode('utf-8')
+                error = execution.stderr.decode('utf-8').strip()
+            except Exception as e:
+                error = f"Error: {str(e)}"
         
+        # Create a thread to execute the Java code
+        java_thread = threading.Thread(target=execute_java)
+        java_thread.start()
+        
+        # Wait for the specified timeout duration
+        java_thread.join(timeout)
+        
+        # If the Java thread is still alive, it means it has exceeded the timeout
+        if java_thread.is_alive():
+            # Terminate the entire process group
+            java_process = subprocess.Popen(['java', class_file_name])
+            os.kill(java_process.pid, signal.SIGTERM)
+            return None, "Execution timed out"
+        
+        # Java execution completed within the timeout
         return output, error
-    
-    except subprocess.TimeoutExpired:
-        return None, "Execution timed out"
     
     except Exception as e:
         # An exception occurred, return error message
